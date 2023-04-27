@@ -139,27 +139,8 @@ fun right(modifier: Modifier = Modifier) {
 
 
 
-
-// ===================================================
-fun getData() :List<WxMessageBean> {
-    val wxMessages: List<WxMessageBean> = ArrayList()
-    val result = wxMessages
-        .asSequence()
-        .plusElement(WxMessageBean("002", "G:\\xjp.jpg", "有美女照片没有?", "G:\\xjp.jpg", MessageType.MESSAGE))
-        .plusElement(WxMessageBean("001", "G:\\xjp.jpg", "", "G:\\xjp.jpg", MessageType.IMAGE))
-        .plusElement(WxMessageBean("001", "G:\\xjp.jpg", "漂亮不?还有...", "G:\\xjp.jpg", MessageType.MESSAGE))
-        .plusElement(WxMessageBean("001", "G:\\xjp.jpg", "", "G:\\xjp.jpg", MessageType.IMAGE))
-        .plusElement(WxMessageBean("002", "G:\\xjp.jpg", "有没有健身的妹纸呀?这些美女照片太多了没意思...要刚柔并进。你的明白吧?", "G:\\xjp.jpg", MessageType.MESSAGE))
-        .plusElement(WxMessageBean("001", "G:\\xjp.jpg", "安心学技术多好,看啥美女对不?", "G:\\xjp.jpg", MessageType.MESSAGE))
-        .plusElement(WxMessageBean("001", "G:\\xjp.jpg", "Compose最近看了一眼,也能跨平台呢?", "G:\\xjp.jpg", MessageType.MESSAGE))
-        .plusElement(WxMessageBean("002", "G:\\xjp.jpg", "是的没错! 但是我觉得Flutter目前更胜一筹在Web端方面", "G:\\xjp.jpg", MessageType.MESSAGE))
-        .toList()
-    return result
-}
-
-
 /**
- * 分钟微信中间界面
+ * 中间界面
  */
 @Composable
 fun centerView() {
@@ -202,19 +183,19 @@ fun centerView() {
                     shape = RoundedCornerShape(10)
                 ).clip(shape = RoundedCornerShape(10))
             ) {
-                ImageRes(
-                    "images/jia.png",
-                    modifier = Modifier.size(18.dp)
+//                ImageRes(
+//                    "images/jia.png",
+//                    modifier = Modifier.size(18.dp)
+//                )
+                Image(
+                    bitmap = getItemBitmapImg("G://xjp.jpg"),
+                    "",
+                    modifier = Modifier.size(80.dp)
                 )
             }
         }
 
     }
-}
-
-@Composable
-fun ImageRes(s: String, modifier: Modifier) {
-    TODO("Not yet implemented")
 }
 
 
@@ -225,7 +206,6 @@ fun RightView() {
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
-//    var listItem by remember { mutableStateListOf(WxMessageBean()) }
     Column {
         Row(
             modifier = Modifier.height(55.dp).fillMaxWidth().background(Color(247, 242, 243, 100))
@@ -233,14 +213,14 @@ fun RightView() {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("郭b蓝")
+            Text("xjp")
             Image(bitmap = getItemBitmapImg("G:\\xjp.jpg"), "")
         }
         Spacer(Modifier.height(1.dp).fillMaxWidth().background(Color(222, 222, 222)))
         LazyColumn(Modifier.weight(1f).fillMaxWidth().background(Color(247, 242, 243, 100)), state = listState) {
             items(WxViewModel.wxMessages.size) { index ->
                 val wxmessage = WxViewModel.wxMessages[index]
-                if (wxmessage.userID == "001") {
+                if (wxmessage.userID == "001") {    // 自己
                     Box {
                         Row(Modifier.padding(10.dp)) {
                             Image(
@@ -269,7 +249,7 @@ fun RightView() {
                         }
                     }
 
-                } else {
+                } else {    // 其他人
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(15.dp),
                         horizontalArrangement = Arrangement.End
@@ -388,9 +368,10 @@ fun RightView() {
     }
 }
 
+// 获取ImageBitmap 通过路径
 fun getItemBitmapImg(headPath: String): ImageBitmap {
 
-    val result : ImageBitmap?
+    lateinit var result : ImageBitmap
 
     if (headPath.startsWith("C:", true) || headPath.startsWith("D:", true) || headPath.startsWith("G:", true)) {
         result = getImageBitmap(headPath)
